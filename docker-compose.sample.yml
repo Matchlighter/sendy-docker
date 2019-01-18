@@ -1,0 +1,42 @@
+version: "3"
+
+networks:
+  traefik:
+    external: true
+
+services:
+
+  sendy:
+    image: matchlighter/sendy
+    build:
+      context: .
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:yourdomain.com; PathPrefix:/sendy/
+      - traefik.port=80
+    ports:
+      - "80:80"
+    volumes:
+      # - ./sendy:/var/www/html
+      - ./data/sendy/uploads:/var/www/html/uploads
+    networks:
+      - default
+      - traefik
+
+  # Database
+  # https://github.com/docker-library/mariadb
+  # https://mariadb.org/
+  mariadb:
+    image: mariadb:10.2
+    container_name: mariadb
+    restart: unless-stopped
+    # Info : These variables are ignored when the volume already exists (if databases was created before).
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=sendy
+      - MYSQL_USER=sendy
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./data/mysql/db:/var/lib/mysql
+

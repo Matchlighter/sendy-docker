@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "$DISABLE_JOBS" = true ]; then
+  exit 0
+fi
+
+logger -p local0.info "s6-supervise : spawning cron process"
+exec cron -f

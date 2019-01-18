@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Launch all services in order
+# -----------------------------------------------------------
+# 1. rsyslogd  (logger)
+# 3. apache    (web server)
+# 6. cron      (job scheduler)
+
+s6-svc -u /services/rsyslogd && s6-svwait -u /services/rsyslogd
+s6-svc -u /services/apache  && s6-svwait -u /services/apache
+s6-svc -u /services/cron
+
+sleep 2
+logger -p local0.info "s6-supervise : (_parent) all my wonderful children have started, i can die in peace :)"
+exit 0

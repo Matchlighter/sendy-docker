@@ -1,0 +1,7 @@
+
+/sendy
+/data
+
+.DS_Store
+.env
+docker-compose.yml
